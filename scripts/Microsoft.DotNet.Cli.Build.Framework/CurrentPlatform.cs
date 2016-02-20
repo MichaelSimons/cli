@@ -2,47 +2,77 @@ using System;
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.PlatformAbstractions;
 
-public static class CurrentPlatform
+namespace Microsoft.DotNet.Cli.Build.Framework
 {
-    public static bool IsWindows
+    public static class CurrentPlatform
     {
-        get
-        {
-            return RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-        }
-    }
+        private static BuildPlatform _current;
 
-    public static bool IsOSX
-    {
-        get
+        public static BuildPlatform Current
         {
-            return RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+            get
+            {
+                if (_current == null)
+                {
+                    DetermineCurrentPlatform();
+                }
+                
+                return _current;
+            }
         }
-    }
 
-    public static bool IsLinux
-    {
-        get
+        public static bool IsWindows
         {
-            return RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+            get
+            {
+                return RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            }
         }
-    }
 
-    public static bool IsUbuntu
-    {
-        get
+        public static bool IsOSX
         {
-            var osname = PlatformServices.Default.Runtime.OperatingSystem;
-            return string.Equals(osname, "ubuntu", StringComparison.OrdinalIgnoreCase);
+            get
+            {
+                return RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+            }
         }
-    }
 
-    public static bool IsCentOS
-    {
-        get
+        public static bool IsUbuntu
         {
-            var osname = PlatformServices.Default.Runtime.OperatingSystem;
-            return string.Equals(osname, "centos", StringComparison.OrdinalIgnoreCase);
+            get
+            {
+                var osname = PlatformServices.Default.Runtime.OperatingSystem;
+                return string.Equals(osname, "ubuntu", StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
+        public static bool IsCentOS
+        {
+            get
+            {
+                var osname = PlatformServices.Default.Runtime.OperatingSystem;
+                return string.Equals(osname, "centos", StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
+        private static void DetermineCurrentPlatform()
+        {
+            if (IsWindows)
+            {
+                _current = BuildPlatform.Windows;
+            }
+            else if (IsOSX)
+            {
+                _current = BuildPlatform.OSX;
+            }
+            else if (IsUbuntu)
+            {
+                _current = BuildPlatform.Ubuntu;
+            }
+            else if (IsCentOS)
+            {
+                _current = BuildPlatform.CentOS;
+            }
         }
     }
 }
