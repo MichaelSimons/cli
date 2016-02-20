@@ -6,7 +6,7 @@ namespace Microsoft.DotNet.Cli.Build.Framework
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class BuildArchitectureAttribute : TargetConditionAttribute
     {
-        public IEnumerable<BuildArchitecture> BuildArchitectures { get; set; }
+        public IEnumerable<BuildArchitecture> BuildArchitectures { get; private set; }
 
         public BuildArchitectureAttribute(params BuildArchitecture[] architectures)
         {
