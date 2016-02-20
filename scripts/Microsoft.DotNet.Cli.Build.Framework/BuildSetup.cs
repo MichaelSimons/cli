@@ -115,13 +115,7 @@ namespace Microsoft.DotNet.Cli.Build.Framework
         {
             var name = targetAttribute.Name ?? methodInfo.Name;
 
-            var conditions = default(Func<bool>[]);
-            if (conditionalAttributes != null)
-            {
-                conditions = conditionalAttributes
-                    .Select<TargetConditionAttribute, Func<bool>>(c => c.EvaluateCondition)
-                    .ToArray();
-            }
+            var conditions = ExtractTargetConditions(conditionalAttributes);
 
             return new BuildTarget(
                 name,
@@ -129,6 +123,18 @@ namespace Microsoft.DotNet.Cli.Build.Framework
                 targetAttribute.Dependencies,
                 conditions,
                 (Func<BuildTargetContext, BuildTargetResult>)methodInfo.CreateDelegate(typeof(Func<BuildTargetContext, BuildTargetResult>)));
+        }
+
+        private static IEnumerable<Func<bool>> ExtractTargetConditions(TargetConditionAttribute[] conditionalAttributes)
+        {
+            if (conditionalAttributes == null || conditionalAttributes.Length == 0)
+            {
+                return Enumerable.Empty<Func<bool>>();
+            }
+
+            return conditionalAttributes
+                    .Select<TargetConditionAttribute, Func<bool>>(c => c.EvaluateCondition)
+                    .ToArray();
         }
 
         private string GenerateSourceString(string file, int? line, string member)

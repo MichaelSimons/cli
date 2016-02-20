@@ -182,7 +182,7 @@ namespace Microsoft.DotNet.Cli.Build
         }
 
         [Target]
-        [BuildPlatform(BuildPlatform.Ubuntu)]
+        [BuildPlatforms(BuildPlatform.Ubuntu)]
         public static BuildTargetResult CheckUbuntuDebianPackageBuildDependencies(BuildTargetContext c)
         {
             var debianPackageBuildDependencies = new string[]
@@ -216,7 +216,7 @@ namespace Microsoft.DotNet.Cli.Build
         }
 
         [Target]
-        [BuildPlatform(BuildPlatform.Ubuntu)]
+        [BuildPlatforms(BuildPlatform.Ubuntu)]
         public static BuildTargetResult CheckUbuntuCoreclrDependencies(BuildTargetContext c)
         {
             var errorMessageBuilder = new StringBuilder();
@@ -258,7 +258,7 @@ namespace Microsoft.DotNet.Cli.Build
         }
 
         [Target]
-        [BuildPlatform(BuildPlatform.CentOS)]
+        [BuildPlatforms(BuildPlatform.CentOS)]
         public static BuildTargetResult CheckCentOSCoreclrDependencies(BuildTargetContext c)
         {
             var errorMessageBuilder = new StringBuilder();

@@ -12,7 +12,7 @@ namespace Microsoft.DotNet.Cli.Build.Framework
         {
             get
             {
-                if (_current == null)
+                if (_current == default(BuildPlatform))
                 {
                     DetermineCurrentPlatform();
                 }

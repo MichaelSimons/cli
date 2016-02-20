@@ -1,4 +1,5 @@
 using System;
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace Microsoft.DotNet.Cli.Build.Framework
 {
@@ -10,7 +11,7 @@ namespace Microsoft.DotNet.Cli.Build.Framework
         {
             get
             {
-                if (_current == null)
+                if (_current == default(BuildArchitecture))
                 {
                     DetermineCurrentArchitecture();
                 }
@@ -23,7 +24,8 @@ namespace Microsoft.DotNet.Cli.Build.Framework
         {
             get
             {
-                return IntPtr.Size != 8;
+                var archName = PlatformServices.Default.Runtime.RuntimeArchitecture;
+                return string.Equals(archName, "x86", StringComparison.OrdinalIgnoreCase);
             }
         }
 
@@ -31,7 +33,8 @@ namespace Microsoft.DotNet.Cli.Build.Framework
         {
             get
             {
-                return IntPtr.Size == 8;
+                var archName = PlatformServices.Default.Runtime.RuntimeArchitecture;
+                return string.Equals(archName, "x64", StringComparison.OrdinalIgnoreCase);
             }
         }
 
