@@ -55,6 +55,19 @@ namespace Microsoft.Extensions.DependencyModel.Tests
         }
 
         [Fact]
+        public void IgnoresNiDllAssemblies()
+        {
+            var context = Read(@"
+""Package"",""runtime.any.System.AppContext"",""4.1.0-rc2-23811"",""sha512-1"",""runtime"",""System.AppContext"",""lib\\dnxcore50\\System.AppContext.dll""
+""Package"",""runtime.any.System.AppContext"",""4.1.0-rc2-23811"",""sha512-1"",""runtime"",""System.AppContext"",""lib\\dnxcore50\\System.AppContext.ni.dll""
+");
+            context.RuntimeLibraries.Should().HaveCount(1);
+            var library = context.RuntimeLibraries.Single();
+            library.Assemblies.Should().HaveCount(1).And
+                .Contain(a => a.Path == "lib\\dnxcore50\\System.AppContext.dll");
+        }
+
+        [Fact]
         public void UsesTypeNameVersionAndHashToGroup()
         {
             var context = Read(@"

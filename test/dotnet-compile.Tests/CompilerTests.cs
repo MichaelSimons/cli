@@ -3,6 +3,8 @@
 
 using System;
 using System.IO;
+using Microsoft.DotNet.Cli.Utils;
+using Microsoft.DotNet.TestFramework;
 using Microsoft.DotNet.Tools.Test.Utilities;
 using Xunit;
 
@@ -104,6 +106,41 @@ namespace Microsoft.DotNet.Tools.Compiler.Tests
             var buildCommand = new BuildCommand(testProject);
 
             buildCommand.Execute().Should().Pass();
+        }
+
+        [Fact]
+        public void EmbeddedDependencyContextIsValidOnBuild()
+        {
+            TestInstance instance = TestAssetsManager.CreateTestInstance("TestAppCompilationContext")
+                                                     .WithLockFiles()
+                                                     .WithBuildArtifacts();
+
+            var testProject = ProjectUtils.GetProjectJson(instance.TestRoot, "TestApp");
+            var outputPath = Path.Combine(instance.TestRoot, "bin");
+            var buildCommand = new BuildCommand(testProject, output: outputPath, framework: DefaultFramework);
+            buildCommand.Execute().Should().Pass();
+            Command.Create(Path.Combine(outputPath, buildCommand.GetOutputExecutableName()), new string[] { })
+                .CaptureStdOut()
+                .CaptureStdErr()
+                .Execute().Should().Pass();
+        }
+
+        [Fact]
+        public void DepsDependencyContextIsValidOnBuild()
+        {
+            TestInstance instance = TestAssetsManager.CreateTestInstance("TestAppCompilationContext")
+                                                     .WithLockFiles()
+                                                     .WithBuildArtifacts();
+
+            var testProject = ProjectUtils.GetProjectJson(instance.TestRoot, "TestAppDeps");
+            var outputPath = Path.Combine(instance.TestRoot, "bin");
+            var buildCommand = new BuildCommand(testProject, output: outputPath, framework: DefaultFramework);
+            buildCommand.Execute().Should().Pass();
+
+            Command.Create(Path.Combine(outputPath, buildCommand.GetOutputExecutableName()), new string[] { })
+                .CaptureStdOut()
+                .CaptureStdErr()
+                .Execute().Should().Pass();
         }
 
         private void CopyProjectToTempDir(string projectDir, TempDirectory tempDir)

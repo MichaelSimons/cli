@@ -27,7 +27,8 @@ namespace Microsoft.Extensions.DependencyModel
                     line.AssetName = ReadValue(reader);
                     line.AssetPath = ReadValue(reader);
 
-                    if (line.AssetType == "runtime")
+                    if (line.AssetType == "runtime" &&
+                        !line.AssetPath.EndsWith(".ni.dll"))
                     {
                         lines.Add(line);
                     }

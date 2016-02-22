@@ -15,8 +15,10 @@ namespace Microsoft.DotNet.Cli.Build
     {
         public static readonly string[] TestPackageProjects = new[]
         {
-            "dotnet-hello/v1/dotnet-hello",
-            "dotnet-hello/v2/dotnet-hello"
+            "TestAssets/TestPackages/dotnet-hello/v1/dotnet-hello",
+            "TestAssets/TestPackages/dotnet-hello/v2/dotnet-hello",
+            "src/Microsoft.Extensions.DependencyModel",
+            "src/Microsoft.DotNet.InternalAbstractions"
         };
 
         public static readonly string[] TestProjects = new[]
@@ -91,7 +93,7 @@ namespace Microsoft.DotNet.Cli.Build
 
             foreach (var relativePath in TestPackageProjects)
             {
-                var fullPath = Path.Combine(c.BuildContext.BuildDirectory, "TestAssets", "TestPackages", relativePath.Replace('/', Path.DirectorySeparatorChar));
+                var fullPath = Path.Combine(c.BuildContext.BuildDirectory, relativePath.Replace('/', Path.DirectorySeparatorChar));
                 c.Info($"Packing: {fullPath}");
                 dotnet.Pack("--output", Dirs.TestPackages)
                     .WorkingDirectory(fullPath)

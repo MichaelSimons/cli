@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using Microsoft.DotNet.Cli.Utils;
 using Microsoft.DotNet.TestFramework;
 using Microsoft.DotNet.Tools.Test.Utilities;
 using Microsoft.Extensions.PlatformAbstractions;
@@ -163,6 +164,41 @@ namespace Microsoft.DotNet.Tools.Publish.Tests
             refsDirectory.Should().NotHaveFile("TestLibrary.dll");
         }
 
+        [Fact]
+        public void EmbeddedDependencyContextIsValidOnPublish()
+        {
+            TestInstance instance = TestAssetsManager.CreateTestInstance("TestAppCompilationContext")
+                                                     .WithLockFiles()
+                                                     .WithBuildArtifacts();
+
+            var testProject = _getProjectJson(instance.TestRoot, "TestApp");
+            var publishCommand = new PublishCommand(testProject);
+            publishCommand.Execute().Should().Pass();
+
+            var exePath = Path.Combine(publishCommand.GetOutputDirectory().FullName, publishCommand.GetOutputExecutable());
+            Command.Create(exePath, new string[] { })
+                .CaptureStdOut()
+                .CaptureStdErr()
+                .Execute().Should().Pass();
+        }
+
+        [Fact]
+        public void DepsDependencyContextIsValidOnPublish()
+        {
+            TestInstance instance = TestAssetsManager.CreateTestInstance("TestAppCompilationContext")
+                                                     .WithLockFiles()
+                                                     .WithBuildArtifacts();
+
+            var testProject = _getProjectJson(instance.TestRoot, "TestAppDeps");
+            var publishCommand = new PublishCommand(testProject);
+            publishCommand.Execute().Should().Pass();
+
+            var exePath = Path.Combine(publishCommand.GetOutputDirectory().FullName, publishCommand.GetOutputExecutable());
+            Command.Create(exePath, new string[] { })
+                .CaptureStdOut()
+                .CaptureStdErr()
+                .Execute().Should().Pass();
+        }
 
         [Fact]
         public void CompilationFailedTest()

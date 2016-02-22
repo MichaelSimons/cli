@@ -57,7 +57,7 @@ namespace Microsoft.Extensions.DependencyModel
                 }
             }
 
-            var depsFile = assembly.Location + DepsFileExtension;
+            var depsFile = Path.ChangeExtension(assembly.Location, DepsFileExtension);
             if (File.Exists(depsFile))
             {
                 using (var stream = File.OpenRead(depsFile))
