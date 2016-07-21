@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.IO;
 using Microsoft.DotNet.InternalAbstractions.Native;
 
 namespace Microsoft.DotNet.InternalAbstractions
@@ -17,6 +18,8 @@ namespace Microsoft.DotNet.InternalAbstractions
         public static string OperatingSystem { get; } = PlatformApis.GetOSName();
 
         public static string RuntimeArchitecture { get; } = GetArch();
+
+        public static bool IsDockerContainer { get; } = GetIsDockerContainer();
 
         private static string GetArch()
         {
@@ -98,6 +101,20 @@ namespace Microsoft.DotNet.InternalAbstractions
                     return "osx";
                 default:
                     return "unknown";
+            }
+        }
+
+        public static bool GetIsDockerContainer()
+        {
+            switch (OperatingSystemPlatform)
+            {
+                case Platform.Windows:
+                    return false; // TODO:  https://www.yammer.com/microsoft.com/#/Threads/show?threadId=678572476
+                case Platform.Linux:
+                    return File.Exists("/.dockerenv");
+                case Platform.Darwin:
+                default:
+                    return false;
             }
         }
     }

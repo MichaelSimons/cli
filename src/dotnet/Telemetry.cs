@@ -26,6 +26,7 @@ namespace Microsoft.DotNet.Cli
         private const string TelemetryProfileEnvironmentVariable = "DOTNET_CLI_TELEMETRY_PROFILE";
         private const string OSVersion = "OS Version";
         private const string OSPlatform = "OS Platform";
+        private const string DockerContainer = "Docker Container";
         private const string RuntimeId = "Runtime Id";
         private const string ProductVersion = "Product Version";
         private const string TelemetryProfile = "Telemetry Profile";
@@ -83,6 +84,7 @@ namespace Microsoft.DotNet.Cli
                 _commonProperties = new Dictionary<string, string>();
                 _commonProperties.Add(OSVersion, RuntimeEnvironment.OperatingSystemVersion);
                 _commonProperties.Add(OSPlatform, RuntimeEnvironment.OperatingSystemPlatform.ToString());
+                _commonProperties.Add(DockerContainer, RuntimeEnvironment.IsDockerContainer.ToString());
                 _commonProperties.Add(RuntimeId, RuntimeEnvironment.GetRuntimeIdentifier());
                 _commonProperties.Add(ProductVersion, Product.Version);
                 _commonProperties.Add(TelemetryProfile, Environment.GetEnvironmentVariable(TelemetryProfileEnvironmentVariable));
