@@ -109,7 +109,8 @@ namespace Microsoft.DotNet.InternalAbstractions
             switch (OperatingSystemPlatform)
             {
                 case Platform.Windows:
-                    return false; // TODO:  https://www.yammer.com/microsoft.com/#/Threads/show?threadId=678572476
+                    // TODO:  https://www.yammer.com/microsoft.com/#/Threads/show?threadId=678572476
+                    return Directory.Exists(Environment.ExpandEnvironmentVariables(@"%SystemDrive%\Users\ContainerAdministrator\"));
                 case Platform.Linux:
                     return File.Exists("/.dockerenv");
                 case Platform.Darwin:
