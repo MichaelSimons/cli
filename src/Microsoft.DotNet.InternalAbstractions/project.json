@@ -17,7 +17,8 @@
         "System.Reflection.TypeExtensions": "4.1.0",
         "System.Runtime.Extensions": "4.1.0",
         "System.Runtime.InteropServices": "4.1.0",
-        "System.Runtime.InteropServices.RuntimeInformation": "4.0.0"
+        "System.Runtime.InteropServices.RuntimeInformation": "4.0.0",
+        "System.ServiceProcess.ServiceController": "4.1.0"
       }
     }
   },

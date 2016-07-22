@@ -3,6 +3,11 @@
 
 using System;
 using System.IO;
+#if NET451 
+using System.ComponentModel.Component;                
+#else
+using System.ServiceProcess;
+#endif
 using Microsoft.DotNet.InternalAbstractions.Native;
 
 namespace Microsoft.DotNet.InternalAbstractions
@@ -109,8 +114,10 @@ namespace Microsoft.DotNet.InternalAbstractions
             switch (OperatingSystemPlatform)
             {
                 case Platform.Windows:
-                    // TODO:  https://www.yammer.com/microsoft.com/#/Threads/show?threadId=678572476
-                    return Directory.Exists(Environment.ExpandEnvironmentVariables(@"%SystemDrive%\Users\ContainerAdministrator\"));
+                    // The most reliable way to check if being run within a Windows Container is to check for the
+                    // presence of the Container Execution Agent service.
+                    return ServiceController.GetServices()
+                        .Any(svc => svc.ServiceName.Equals("cexecsvc", StringComparison.OrdinalIgnoreCase));
                 case Platform.Linux:
                     return File.Exists("/.dockerenv");
                 case Platform.Darwin:
