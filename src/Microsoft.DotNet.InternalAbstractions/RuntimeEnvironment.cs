@@ -3,11 +3,8 @@
 
 using System;
 using System.IO;
-#if NET451 
-using System.ComponentModel.Component;                
-#else
+using System.Linq;
 using System.ServiceProcess;
-#endif
 using Microsoft.DotNet.InternalAbstractions.Native;
 
 namespace Microsoft.DotNet.InternalAbstractions
