@@ -85,7 +85,7 @@ namespace Microsoft.DotNet.Cli
                 _commonProperties.Add(OSVersion, RuntimeEnvironment.OperatingSystemVersion);
                 _commonProperties.Add(OSPlatform, RuntimeEnvironment.OperatingSystemPlatform.ToString());
                 _commonProperties.Add(DockerContainer, RuntimeEnvironment.IsDockerContainer.ToString());
-                _commonProperties.Add(RuntimeId, RuntimeEnvironment.GetRuntimeIdentifier());
+                _commonProperties.Add(RuntimeId, RuntimeEnvironment.GetRuntimeIdentifier() ?? "unknown");
                 _commonProperties.Add(ProductVersion, Product.Version);
                 _commonProperties.Add(TelemetryProfile, Environment.GetEnvironmentVariable(TelemetryProfileEnvironmentVariable));
                 _commonMeasurements = new Dictionary<string, double>();

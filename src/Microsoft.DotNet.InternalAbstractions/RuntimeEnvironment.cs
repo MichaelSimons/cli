@@ -3,9 +3,9 @@
 
 using System;
 using System.IO;
-using System.Linq;
-using System.ServiceProcess;
+using System.Security;
 using Microsoft.DotNet.InternalAbstractions.Native;
+using Microsoft.Win32;
 
 namespace Microsoft.DotNet.InternalAbstractions
 {
@@ -21,7 +21,7 @@ namespace Microsoft.DotNet.InternalAbstractions
 
         public static string RuntimeArchitecture { get; } = GetArch();
 
-        public static bool IsDockerContainer { get; } = GetIsDockerContainer();
+        public static bool? IsDockerContainer { get; } = GetIsDockerContainer();
 
         private static string GetArch()
         {
@@ -106,15 +106,23 @@ namespace Microsoft.DotNet.InternalAbstractions
             }
         }
 
-        public static bool GetIsDockerContainer()
+        public static bool? GetIsDockerContainer()
         {
             switch (OperatingSystemPlatform)
             {
                 case Platform.Windows:
-                    // The most reliable way to check if being run within a Windows Container is to check for the
-                    // presence of the Container Execution Agent service.
-                    return ServiceController.GetServices()
-                        .Any(svc => svc.ServiceName.Equals("cexecsvc", StringComparison.OrdinalIgnoreCase));
+                    try
+                    {
+                        // Only use this registry setting for telemetry purposes – do not change product behavior inside containers based on this key. 
+                        using (var subkey = Registry.LocalMachine.OpenSubKey("HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control"))
+                        {
+                            return subkey != null && subkey.GetValue("ContainerType") != null;
+                        }
+                    }
+                    catch (SecurityException)
+                    {
+                        return null;  // unkown
+                    }
                 case Platform.Linux:
                     return File.Exists("/.dockerenv");
                 case Platform.Darwin:
