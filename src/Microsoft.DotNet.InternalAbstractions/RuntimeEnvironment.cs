@@ -114,7 +114,7 @@ namespace Microsoft.DotNet.InternalAbstractions
                     try
                     {
                         // Only use this registry setting for telemetry purposes – do not change product behavior inside containers based on this key. 
-                        using (var subkey = Registry.LocalMachine.OpenSubKey("HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control"))
+                        using (var subkey = Registry.LocalMachine.OpenSubKey("System\\CurrentControlSet\\Control"))
                         {
                             return subkey != null && subkey.GetValue("ContainerType") != null;
                         }
