@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Loader;
 using System.Text;
 using Microsoft.DotNet.Cli.Utils;
 using Microsoft.DotNet.Configurer;
@@ -15,6 +14,7 @@ using Microsoft.DotNet.Tools.Build;
 using Microsoft.DotNet.Tools.Compiler;
 using Microsoft.DotNet.Tools.Compiler.Csc;
 using Microsoft.DotNet.Tools.Help;
+using Microsoft.DotNet.Tools.Init;
 using Microsoft.DotNet.Tools.New;
 using Microsoft.DotNet.Tools.NuGet;
 using Microsoft.DotNet.Tools.Publish;
@@ -32,6 +32,7 @@ namespace Microsoft.DotNet.Cli
             ["build"] = BuildCommand.Run,
             ["compile-csc"] = CompileCscCommand.Run,
             ["help"] = HelpCommand.Run,
+            ["init"] = InitCommand.Run,
             ["new"] = NewCommand.Run,
             ["nuget"] = NuGetCommand.Run,
             ["pack"] = PackCommand.Run,
@@ -116,10 +117,14 @@ namespace Microsoft.DotNet.Cli
                     }
                     else
                     {
-                        ConfigureDotNetForFirstTimeUse(nugetCacheSentinel);
-
                         // It's the command, and we're done!
                         command = args[lastArg];
+
+                        if (command.Equals("init"))
+                        {
+                            InitCommand.ConfigureDotNetForFirstTimeUse(nugetCacheSentinel);
+                        }
+                        
                         break;
                     }
                 }
@@ -165,26 +170,6 @@ namespace Microsoft.DotNet.Cli
 
             return exitCode;
 
-        }
-
-        private static void ConfigureDotNetForFirstTimeUse(INuGetCacheSentinel nugetCacheSentinel)
-        {
-            using (PerfTrace.Current.CaptureTiming())
-            {
-                using (var nugetPackagesArchiver = new NuGetPackagesArchiver())
-                {
-                    var environmentProvider = new EnvironmentProvider();
-                    var commandFactory = new DotNetCommandFactory();
-                    var nugetCachePrimer = 
-                        new NuGetCachePrimer(commandFactory, nugetPackagesArchiver, nugetCacheSentinel);
-                    var dotnetConfigurer = new DotnetFirstTimeUseConfigurer(
-                        nugetCachePrimer,
-                        nugetCacheSentinel,
-                        environmentProvider);
-
-                    dotnetConfigurer.Configure();
-                }
-            }
         }
 
         private static void InitializeProcess()

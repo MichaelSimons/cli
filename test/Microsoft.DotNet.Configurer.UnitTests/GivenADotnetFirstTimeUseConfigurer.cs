@@ -59,7 +59,7 @@ namespace Microsoft.DotNet.Configurer.UnitTests
         }
 
         [Fact]
-        public void It_does_not_prime_the_cache_if_the_sentinel_exists_but_the_user_has_set_the_DOTNET_SKIP_FIRST_TIME_EXPERIENCE_environemnt_variable()
+        public void It_does_not_prime_the_cache_if_the_sentinel_does_not_exists_but_the_user_has_set_the_DOTNET_SKIP_FIRST_TIME_EXPERIENCE_environemnt_variable()
         {
             _nugetCacheSentinelMock.Setup(n => n.Exists()).Returns(false);
             _environmentProviderMock
